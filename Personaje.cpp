@@ -1,77 +1,54 @@
 #include "Personaje.h"
-#include <QGraphicsScene>
-#include <QLabel>
-#include <QPixmap>
-#include <QKeyEvent>
-#include <QDebug>
 
 //Definir el jugador y la imgen
-Personaje::Personaje(QGraphicsView *view,QGraphicsItem *im):QGraphicsPixmapItem(im)
+Personaje::Personaje(qreal _x, qreal _y)
 {
-    viewRect = view->size();
-    QRectF sceneRect = view->sceneRect();
-    qDebug() << viewRect << " "<< sceneRect << " "<<view->size().width();
-    spriteSheet.load(":/sprites.png");
+    x = _x;
+    y = _y;
+    spriteX = 201;
 
-    QPixmap sprite = spriteSheet.copy(spriteX, spriteY, spriteWidth, spriteHeight);
-    setPixmap(sprite);
+    image = new QPixmap (":/sprites/sprite.png");
+
+    setPos(_x,_y);
 }
 
 
-
-void Personaje::keyPressEvent(QKeyEvent *event)
-{
-    //Manejo del evento de tecla
-    switch(event->key()) {
-    case Qt::Key_A:
-
-        moveBy(-5, 0);
-        //setSprite(60);
-        break;
-    case Qt::Key_D:
-
-        moveBy(5, 0);
-        //setSprite(120);
-        break;
-    case Qt::Key_W:
-
-        moveBy(0, -5);
-        break;
-    case Qt::Key_S:
-
-        moveBy(0, 5);
-        break;
-    default:
-        QGraphicsItem::keyPressEvent(event);
-    }
-}
 
 QRectF Personaje::boundingRect() const
 {
-
+    return QRectF(x,y,66, 66);
 }
 
 void Personaje::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-
+    if(dir == 's')
+    {
+        painter->drawPixmap(x,y,*image,spriteX,0,67,67);
+    }
+    else if (dir == 'a')
+    {
+        painter->drawPixmap(x,y,*image,spriteX,67,67,67);
+    }
+    else if (dir == 'd')
+    {
+        painter->drawPixmap(x,y,*image,spriteX,134,67,67);
+    }
+    else if (dir == 'w')
+    {
+        painter->drawPixmap(x,y,*image,spriteX,202,67,67);
+    }
 }
 
-void Personaje::moveBy(int dx, int dy)
+void Personaje::moveBy(short dx,short dy)
 {
     x += dx;
     y += dy;
-    if (x>viewRect.width()-50||x<0){
-        x-=dx;
-    }
     setPos(x, y);
 }
 
-void Personaje::setSprite(int dir)
+void Personaje::setSprite()
 {
-    spriteX = 60*cont;
-    spriteY = dir;
-    QPixmap sprite = spriteSheet.copy(spriteX, spriteY, spriteWidth, spriteHeight);
-    setPixmap(sprite);
+    spriteX = 67*cont + 201;
     cont++;
-    if(cont==7){cont=0;}
+    if(cont==3){cont=0;}
 }

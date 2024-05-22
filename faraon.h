@@ -5,11 +5,11 @@
 class faraon : public Personaje
 {
 public:
+    faraon(qreal _x, qreal _y);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-
-private:
-
+    void perseguirJugador();
+    void evitarProyectil();
 };
 
 #endif // FARAON_H

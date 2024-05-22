@@ -4,6 +4,11 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "proyectil.h"
+#include "Personaje.h"
+#include <QKeyEvent>
+#include <QLabel>
+#include <QPixmap>
+#include <faraon.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,15 +21,22 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    bool clic;
     float tiempoTrans;
-
+    void set_escena(short num_escena);
+    QGraphicsScene *scene;
 
 private slots:
     void hmov(Proyectil *bola);
+    void Actualizacion();
+    void keyPressEvent(QKeyEvent *event);
+
 
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
+    faraon *villano;
+    Personaje *moises;
+    short int vel_personaje = 5;
+    short int num_escena = 0;
 };
 #endif // MAINWINDOW_H

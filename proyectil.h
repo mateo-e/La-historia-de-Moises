@@ -3,6 +3,12 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <QPainter>
+#include <QKeyEvent>
+#include <QDebug>
+#include <QTimer>
+#include <QObject>
+#include <cmath>
 
 class QTimer;
 
@@ -13,9 +19,6 @@ public:
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-
-    // Reimplementación del evento Keypress
-    void keyPressEvent(QKeyEvent *event) override;
 
     // Movimiento
     void moveBy(int dx, int dy);

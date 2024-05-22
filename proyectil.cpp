@@ -1,10 +1,4 @@
 #include "proyectil.h"
-#include <QPainter>
-#include <QKeyEvent>
-#include <QDebug>
-#include <QTimer>
-#include <QObject>
-#include <cmath>
 
 Proyectil::Proyectil(QGraphicsView *view, float velIn,  qreal xIn, qreal yIn, float theta,QGraphicsItem *parent)
     : QGraphicsItem(parent), velIn(velIn), theta(theta), xIn(xIn), yIn(yIn)
@@ -26,36 +20,7 @@ void Proyectil::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawEllipse(55, 55, 10, 10); // Adjust as needed
 }
 
-void Proyectil::keyPressEvent(QKeyEvent *event)
-{
-    //Manejo del evento de tecla
-    switch(event->key()) {
-    case Qt::Key_Up:
-        moveBy(0, -5);
-        break;
-    case Qt::Key_Down:
-        moveBy(0, 5);
-        break;
-    case Qt::Key_A:
-        qDebug() << "Tecla: " << event->key();
-        moveBy(-5, 0);
-        break;
-    case Qt::Key_D:
-        qDebug() << "Tecla: " << event->key();
-        moveBy(5, 0);
-        break;
-    case Qt::Key_W:
-        qDebug() << "Tecla: " << event->key();
-        moveBy(0, -5);
-        break;
-    case Qt::Key_S:
-        qDebug() << "Tecla: " << event->key();
-        moveBy(0, 5);
-        break;
-    default:
-        QGraphicsItem::keyPressEvent(event);
-    }
-}
+
 
 void Proyectil::moveBy(int dx, int dy)
 {
