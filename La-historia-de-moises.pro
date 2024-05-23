@@ -13,12 +13,14 @@ SOURCES += \
     faraon.cpp \
     main.cpp \
     mainwindow.cpp \
+    pared.cpp \
     proyectil.cpp
 
 HEADERS += \
     Personaje.h \
     faraon.h \
     mainwindow.h \
+    pared.h \
     proyectil.h
 
 FORMS += \

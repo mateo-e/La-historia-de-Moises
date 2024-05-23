@@ -16,14 +16,15 @@ protected:
     short int cont=0;
     short int spriteX;
     QPixmap *image;
-    qreal x;
-    qreal y;
+
 
 
 public:
     short int num_proyectiles;
     short int vida = 100;
     char dir = 'w';
+    qreal x;
+    qreal y;
     Personaje(qreal _x, qreal _y);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
