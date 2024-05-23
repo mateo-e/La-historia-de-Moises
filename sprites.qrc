@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sprites/sprite.png</file>
+        <file>sprites/sombra_apuntado.png</file>
+    </qresource>
+</RCC>
