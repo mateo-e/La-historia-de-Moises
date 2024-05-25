@@ -34,7 +34,7 @@ void pared::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     if(imageName.size() > 1) // si se quiere que la pared tenga algun aspecto en especifio
     {
         QPixmap *aspecto = new QPixmap(imageName);
-        painter->drawPixmap(posx,posy,150,110,*aspecto);
+        painter->drawPixmap(posx,posy,largoTotal,30,*aspecto);
     }
 
     else

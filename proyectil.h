@@ -23,13 +23,19 @@ public:
     // Movimiento
     void moveBy(int dx, int dy);
     void movParabolico(float *dt);
-
-private: //Podrían ser públicas
     qreal posX;
     qreal posY;
+    float velIn;
+    bool pintar = true;
+    float tiempoTrans;
+
+private: //Podrían ser públicas
+
+    float rotacion = 0;
     QSize viewRect;
-    float velIn, theta, dir;
+    float theta, dir;
     qreal xIn, yIn;
+    QPixmap *aspecto;
 };
 
 #endif // PROYECTIL_H

@@ -22,16 +22,15 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    float tiempoTrans;
     void set_escena(short num_escena);
+    void update_proyectil();
     QGraphicsScene *scene;
+    void hmov(Proyectil *bola);
 
 private slots:
-    void hmov(Proyectil *bola);
+
     void Actualizacion();
     void keyPressEvent(QKeyEvent *event);
-
-
     void on_JugarBtn_clicked();
 
 private:
@@ -40,8 +39,10 @@ private:
     faraon *villano;
     Personaje *moises;
     short int vel_personaje = 5;
-    short int num_escena = 0;
-    bool Apuntando = false;
+    short int num_escena;
+    bool Apuntando;
     short int angulo_tiro = 45;
+
+
 };
 #endif // MAINWINDOW_H

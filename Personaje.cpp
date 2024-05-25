@@ -1,6 +1,17 @@
 #include "Personaje.h"
 
 //Definir el jugador y la imgen
+
+bool Personaje::getBandera() const
+{
+    return bandera;
+}
+
+void Personaje::setBandera(bool newBandera)
+{
+    bandera = newBandera;
+}
+
 Personaje::Personaje(qreal _x, qreal _y)
 {
     x = _x;

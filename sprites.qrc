@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>sprites/sprite.png</file>
-        <file>sprites/sombra_apuntado.png</file>
+        <file>sprites/puntos_apuntado.png</file>
+        <file>sprites/piedra.png</file>
     </qresource>
 </RCC>

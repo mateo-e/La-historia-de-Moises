@@ -32,8 +32,8 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>5</y>
+      <x>0</x>
+      <y>-10</y>
       <width>1285</width>
       <height>800</height>
      </rect>
@@ -43,6 +43,11 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI Emoji</family>
+     </font>
     </property>
    </widget>
    <widget class="QPushButton" name="JugarBtn">
@@ -54,8 +59,32 @@
       <height>61</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Copperplate Gothic Light</family>
+     </font>
+    </property>
     <property name="text">
      <string>JUGAR</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Informacion">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>230</y>
+      <width>181</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Copperplate Gothic Bold</family>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

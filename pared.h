@@ -13,6 +13,7 @@ public:
     pared(int x, int y, int w, int h, QString im);
 
     QString imageName = NULL;
+    short int largoTotal = 90;
 
     QRectF boundingRect() const;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget = nullptr);
