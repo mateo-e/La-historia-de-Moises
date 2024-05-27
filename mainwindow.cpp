@@ -11,18 +11,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     // se crea la escena 0 la cual corresponde al menu
 
-    set_escena(0); // se inicializa la primera escena
+    set_escena(2); // se inicializa la primera escena
 
     timer = new QTimer;
 
     connect(timer, SIGNAL(timeout()), this, SLOT(Actualizacion()));
 
-    timer->start(25);
+    timer->start(30);
 
-
+    ui->vida_label->hide();
     ui->Informacion->hide();
     Apuntando = false;
-    num_escena = 0;
 
 
 
@@ -58,32 +57,28 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::set_escena(short int num_escena)
+void MainWindow::set_escena(short int NewNum_escena)
 {
-    if(num_escena != 0)
+    num_escena = NewNum_escena;
+    if(NewNum_escena != 0)
         delete scene; // se elimina escena anterior
 
     scene = new QGraphicsScene(this); // se crea la nueva escena
 
-    switch(num_escena)
+    scene->setSceneRect(0, 0, 1280, 720);
+    ui->graphicsView->setScene(scene);
+    ui->graphicsView->setFixedSize(1280 + 2 * ui->graphicsView->frameWidth(), 720 + 2 * ui->graphicsView->frameWidth());//manejar la relación de aspecto
+
+    switch(NewNum_escena)
     {
         case 0:
-        {
-
-            scene->setSceneRect(0, 0, 1280, 720);
-            ui->graphicsView->setScene(scene);
-            ui->graphicsView->setFixedSize(1280 + 2 * ui->graphicsView->frameWidth(), 720 + 2 * ui->graphicsView->frameWidth());//manejar la relación de aspecto
-
+        { // escena de inicio
             break;
         }
 
         case 1:
-        {
-            scene->setSceneRect(0, 0, 1280, 720);
-            ui->graphicsView->setScene(scene);
-            ui->graphicsView->setFixedSize(1280 + 2 * ui->graphicsView->frameWidth(), 720 + 2 * ui->graphicsView->frameWidth());//manejar la relación de aspecto
-
-
+        { // escena de nivel 1
+            ui->vida_label->show();
             QPixmap backgroundImage(":/backgrounds/background_1.jpg");
 
             QGraphicsPixmapItem *background = scene->addPixmap(backgroundImage);
@@ -95,23 +90,34 @@ void MainWindow::set_escena(short int num_escena)
 
             villano = new faraon(500,290);
             scene->addItem(villano);
-            villano->num_proyectiles = 5;
-
-            villano->setTransformOriginPoint(villano->boundingRect().center());
-            villano->setRotation(45);
+            villano->num_proyectiles = 1;
 
             background->setPos(0,-400);
             break;
         }
         case 2:
-        {
+        { // escena de nivel 2
+            QPixmap backgroundImage(":/backgrounds/background_2.jpg");
 
+            background = scene->addPixmap(backgroundImage);
+
+            background->setPos(0,-50);
             break;
         }
         case 3:
-        {
+        { // escena de nivel 3
 
             break;
+        }
+
+        case 4:
+        { // escena de juego perdido
+
+        }
+
+        case 5:
+        { // escena de juego ganado
+
         }
         }
 }
@@ -119,39 +125,110 @@ void MainWindow::set_escena(short int num_escena)
 
 void MainWindow::Actualizacion()
 {
-
-    //Proyectil p;
-
     if(num_escena == 0)
         return;
 
-    moises->setSprite();
-
-    for(int i = 0; i < 5 - moises->num_proyectiles; i++)
+    else if(num_escena == 1)
     {
-        if((moises->piedras.at(i))->velIn < 1)
+        // movimiento del jugador
+        moises->setSprite();
+
+        for(int i = 0; i < 5 - moises->num_proyectiles; i++)
         {
-            (moises->piedras.at(i))->pintar = false; // detiene la animacion
-        }
-        else
-        {
-            hmov(moises->piedras.at(i));
-            moises->piedras.at(i)->tiempoTrans += 0.15;
+            if(villano->collidesWithItem(moises->piedras.at(i),Qt::IntersectsItemBoundingRect)) // se evalua colision de cada uno de los proyectiles del jugador con el villano
+            {
+                villano->vidas --;
+                ui->vida_label->setText(QString::number(villano->vidas));
+                moises->piedras.at(i)->posX = 1000;
+                moises->piedras.at(i)->posY = 1000;
+                moises->piedras.at(i)->setPos(1000,1000);
+
+                if(villano->vidas == 0)
+                {
+                    ui->Informacion->hide();
+                    ui->vida_label->hide();
+                    set_escena(2); // se pasa al siguiente nivel
+                }
+                return;
+            }
+
+            if((moises->piedras.at(i))->velIn < 1 or moises->piedras.at(i)->posX == 1000)
+            {
+                (moises->piedras.at(i))->pintar = false; // detiene la animacion
+            }
+            else
+            {
+                hmov(moises->piedras.at(i));
+                moises->piedras.at(i)->tiempoTrans += 0.15;
+            }
         }
 
+
+        // accion y movimiento del faraon
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+        int numeroAleatorio = std::rand() % 3 + 1;
+
+        villano->setTransformOriginPoint(villano->boundingRect().center());
+
+        switch(numeroAleatorio)
+        {
+            case 1:
+            {// atacar jugador
+
+                if(! villano->proy_lanzado) // si el faraon ya tiene un proyectil lanzado no se le permite lanzar mas hasta que se destruya el actual
+                {
+                    // se crea lanza del faraon y se añade a la escena
+                    villano->proy_lanzado = true;
+                    villano->lanza = new Proyectil(nullptr,-65,villano->x,villano->y,-45);
+                    villano->lanza->setRotation(-45);
+                    villano->lanza->setPos(villano->x,villano->y);
+                    scene->addItem(villano->lanza);
+                    break;
+                }
+            }
+            default: villano->despl_x(); break;
+        }
+
+        if(villano->proy_lanzado)
+        {
+            // verificacion de nivel perdido
+            if(moises->collidesWithItem(villano->lanza,Qt::IntersectsItemBoundingRect))
+            {
+                set_escena(4); // escena de juego perdido
+                return;
+            }
+
+            if(villano->lanza->velIn > -1)
+            {
+                delete villano->lanza; // se elimina el proyectil en caso de que se detenga
+                villano->proy_lanzado = false;
+            }
+            else
+            {
+                hmov(villano->lanza);
+                villano->lanza->tiempoTrans += 0.15;
+            }
+        }
     }
 
+    else if(num_escena == 2)
+    {
+        // actualizacion del backgound
 
 
 
+    }
+    else if(num_escena == 3)
+    {
+
+    }
 }
 
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     //Manejo del evento de tecla para cada mecanica del nivel actual (num_escena)
-
-
 
     if(num_escena == 1)
     {
@@ -163,7 +240,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 if(moises->x > 5)
                 {
                     moises->dir = 'a';
-                    moises->moveBy(-vel_personaje, 0);
+                    moises->moveBy(-5, 0);
                 }
 
                 break;
@@ -171,7 +248,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 if(moises->x < 200)
                 {
                     moises->dir = 'd';
-                    moises->moveBy(vel_personaje, 0);
+                    moises->moveBy(5, 0);
                 }
 
                 break;
@@ -307,19 +384,19 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         switch(event->key()) {
         case Qt::Key_A:
             moises->dir = 'a';
-            moises->moveBy(-vel_personaje, 0);
+            moises->moveBy(-5, 0);
             break;
         case Qt::Key_D:
             moises->dir = 'd';
-            moises->moveBy(vel_personaje, 0);
+            moises->moveBy(5, 0);
             break;
         case Qt::Key_W:
             moises->dir = 'w';
-            moises->moveBy(0, -vel_personaje);
+            moises->moveBy(0, -5);
             break;
         case Qt::Key_S:
             moises->dir = 's';
-            moises->moveBy(0, vel_personaje);
+            moises->moveBy(0, 5);
             break;
         }
     }
@@ -334,12 +411,9 @@ void MainWindow::hmov(Proyectil *bola)
 
 void MainWindow::on_JugarBtn_clicked()
 {
-    set_escena(1); // se elimina escena anterior y se cambia a la siguiente
+    set_escena(2); // se elimina escena anterior y se cambia a la siguiente
 
     // se esconden los elementos del menu
     delete ui->JugarBtn;
-
-    num_escena = 1;
-
 }
 

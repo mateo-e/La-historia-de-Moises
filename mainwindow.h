@@ -38,11 +38,11 @@ private:
     QTimer *timer;
     faraon *villano;
     Personaje *moises;
-    short int vel_personaje = 5;
     short int num_escena;
     bool Apuntando;
     short int angulo_tiro = 45;
-
+    QGraphicsPixmapItem *background;
+    short int bg_posx = 0;
 
 };
 #endif // MAINWINDOW_H

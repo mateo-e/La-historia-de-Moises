@@ -4,6 +4,7 @@ faraon::faraon(qreal _x, qreal _y) : Personaje(_x,_y)
 {
     spriteX = 396;
     dir = 'a';
+    vidas = 100;
 
     image = new QPixmap(":/sprites/sprite.png");
 
@@ -33,4 +34,26 @@ void faraon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     {
         painter->drawPixmap(x,y,*image,spriteX,202,67,67);
     }
+}
+
+void faraon::setSprite()
+{
+    spriteX = 67*cont + 396;
+    cont++;
+    if(cont==3){cont=0;}
+}
+
+void faraon::despl_x()
+{
+    if(x < 600 and 597 <= x)
+        dir = 'a';
+    else if(x < 400 and 397 <= x)
+        dir = 'd';
+    if(dir == 'd')
+        moveBy(3,0);
+    else if(dir == 'a')
+        moveBy(-3,0);
+
+    setSprite();
+
 }

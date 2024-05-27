@@ -31,6 +31,7 @@ public:
 
 private: //Podrían ser públicas
 
+    QGraphicsView *view;
     float rotacion = 0;
     QSize viewRect;
     float theta, dir;

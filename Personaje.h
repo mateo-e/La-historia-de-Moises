@@ -16,16 +16,17 @@ class Personaje:public QObject,
     Q_OBJECT
 
 private:
-    bool bandera = false;
+    bool bandera = false;  
 
 protected:
     QPixmap *image;
     short int cont=0;
     short int spriteX;
 
+
 public:
     short int num_proyectiles = 3;
-    //short int vida = 100;
+    short int vidas;
     char dir = 'd';
     qreal x;
     qreal y;
@@ -42,5 +43,6 @@ public:
     bool getBandera() const;
     void setBandera(bool newBandera);
     QList<Proyectil *> piedras;
+
 };
 #endif // PERSONAJE_H

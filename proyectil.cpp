@@ -1,30 +1,45 @@
 #include "proyectil.h"
 
 Proyectil::Proyectil(QGraphicsView *view, float velIn,  qreal xIn, qreal yIn, float theta,QGraphicsItem *parent)
-    : QGraphicsItem(parent), velIn(velIn), theta(theta), xIn(xIn), yIn(yIn)
+    : QGraphicsItem(parent), velIn(velIn), theta(theta), xIn(xIn), yIn(yIn),view(view)
 {
     setFlag(QGraphicsItem::ItemIsFocusable); //Inicialización opcional para decir que tiene el foco para eventos del teclado
-    viewRect = view ->size();
     dir=1;
-    aspecto = new QPixmap(":/sprites/piedra.png");
+
+    if(view != nullptr)
+        aspecto = new QPixmap(":/sprites/piedra.png");
+    else
+        aspecto = new QPixmap(":/sprites/cetro_faraon.png");
+
     tiempoTrans = 0;
 
-
-
+    posX = xIn;
+    posY = yIn;
 }
 
 QRectF Proyectil::boundingRect() const
 {
-    return QRectF(posX, posY, 30, 30); // Xoordenadas iniciales del rect (sobre el origen del punto), unidades a la derecha y unidades abajo
+    if(view != nullptr)
+        return QRectF(posX, posY, 30, 30); // Xoordenadas iniciales del rect (sobre el origen del punto), unidades a la derecha y unidades abajo
+    else
+        return QRectF(posX, posY, 50, 80);
 }
 
 void Proyectil::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->drawPixmap(posX,posY,30,30,*aspecto);
     if(pintar)
     {
+        if(view != nullptr)
+        {
+            painter->drawPixmap(posX,posY,30,30,*aspecto);
+            rotacion += 0.02;
+        }
+        else
+        {
+            painter->drawPixmap(posX,posY,50,80,*aspecto);
+            rotacion -= 0.05;
+        }
         setTransformOriginPoint(boundingRect().center()); // se ajusta el eje de giro
-        rotacion += 0.01;
         setRotation(rotacion);
     }
 }
@@ -42,6 +57,7 @@ void Proyectil::movParabolico(float *dt)
 {
     if(pintar)
     {
+
         posX = xIn + (velIn*cos(theta) * *dt)*dir;
         posY = yIn - (velIn *sin(theta) * *dt) + (0.5*9.8 * *dt * *dt);
 

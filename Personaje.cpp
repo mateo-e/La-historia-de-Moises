@@ -17,6 +17,7 @@ Personaje::Personaje(qreal _x, qreal _y)
     x = _x;
     y = _y;
     spriteX = 201;
+    vidas = 1;
 
     image = new QPixmap (":/sprites/sprite.png");
 

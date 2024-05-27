@@ -3,5 +3,6 @@
         <file>sprites/sprite.png</file>
         <file>sprites/puntos_apuntado.png</file>
         <file>sprites/piedra.png</file>
+        <file>sprites/cetro_faraon.png</file>
     </qresource>
 </RCC>
