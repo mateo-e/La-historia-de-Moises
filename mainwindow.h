@@ -1,4 +1,4 @@
-  #ifndef MAINWINDOW_H
+#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -30,19 +30,26 @@ public:
 private slots:
 
     void Actualizacion();
+    void aumentarCronometro();
     void keyPressEvent(QKeyEvent *event);
     void on_JugarBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
+    QTimer *cronometro;
     faraon *villano;
     Personaje *moises;
-    short int num_escena;
+    short int tiempo = 0;
+    short int num_escena = 0;
     bool Apuntando;
     short int angulo_tiro = 45;
-    QGraphicsPixmapItem *background;
     short int bg_posx = 0;
+    QGraphicsPixmapItem *background;
+    pared *cactus;
+    pared *casa;
+    pared *marco;
+    pared *brocha;
 
 };
 #endif // MAINWINDOW_H

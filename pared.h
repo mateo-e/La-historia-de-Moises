@@ -6,14 +6,14 @@
 class pared: public QGraphicsItem
 {
 
-    int posx, posy,w, h;
+
 public:
     pared();
     pared(int x, int y, int w, int h);
     pared(int x, int y, int w, int h, QString im);
 
     QString imageName = NULL;
-    short int largoTotal = 90;
+    short int largoTotal = 90,cont = 0,posx, posy, w, h;
 
     QRectF boundingRect() const;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget = nullptr);

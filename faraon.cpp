@@ -4,7 +4,7 @@ faraon::faraon(qreal _x, qreal _y) : Personaje(_x,_y)
 {
     spriteX = 396;
     dir = 'a';
-    vidas = 100;
+    vidas = 3;
 
     image = new QPixmap(":/sprites/sprite.png");
 
@@ -50,9 +50,9 @@ void faraon::despl_x()
     else if(x < 400 and 397 <= x)
         dir = 'd';
     if(dir == 'd')
-        moveBy(3,0);
+        moveBy(2,0);
     else if(dir == 'a')
-        moveBy(-3,0);
+        moveBy(-2,0);
 
     setSprite();
 

@@ -53,9 +53,9 @@
    <widget class="QPushButton" name="JugarBtn">
     <property name="geometry">
      <rect>
-      <x>579</x>
+      <x>560</x>
       <y>300</y>
-      <width>151</width>
+      <width>181</width>
       <height>61</height>
      </rect>
     </property>
@@ -71,10 +71,10 @@
    <widget class="QLabel" name="Informacion">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>230</y>
-      <width>181</width>
-      <height>16</height>
+      <x>490</x>
+      <y>650</y>
+      <width>311</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="font">
@@ -90,20 +90,58 @@
    <widget class="QLabel" name="vida_label">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>210</y>
+      <x>560</x>
+      <y>600</y>
       <width>181</width>
-      <height>16</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Copperplate Gothic Bold</family>
+      <pointsize>28</pointsize>
       <bold>false</bold>
      </font>
     </property>
     <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_cronometro">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>110</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Copperplate Gothic Bold</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="context_lbl">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>110</y>
+      <width>451</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Copperplate Gothic Bold</family>
+     </font>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>

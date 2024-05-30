@@ -25,7 +25,7 @@ protected:
 
 
 public:
-    short int num_proyectiles = 3;
+    short int num_proyectiles = 3, cont_casas = 0;
     short int vidas;
     char dir = 'd';
     qreal x;
@@ -42,6 +42,9 @@ public:
     void setSombra_apuntado(pared *newSombra_apuntado);
     bool getBandera() const;
     void setBandera(bool newBandera);
+    qreal posY_in;
+    float tiempoTrans = 0;
+    void saltar();
     QList<Proyectil *> piedras;
 
 };

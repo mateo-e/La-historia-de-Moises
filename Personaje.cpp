@@ -12,12 +12,20 @@ void Personaje::setBandera(bool newBandera)
     bandera = newBandera;
 }
 
+void Personaje::saltar()
+{
+    y = posY_in - (40 * tiempoTrans) + (0.5*9.8 * tiempoTrans * tiempoTrans);
+    setPos(x,y);
+}
+
 Personaje::Personaje(qreal _x, qreal _y)
 {
     x = _x;
     y = _y;
     spriteX = 201;
-    vidas = 1;
+    vidas = 3;
+    posY_in = _y;
+
 
     image = new QPixmap (":/sprites/sprite.png");
 
@@ -64,3 +72,5 @@ void Personaje::setSprite()
     cont++;
     if(cont==3){cont=0;}
 }
+
+

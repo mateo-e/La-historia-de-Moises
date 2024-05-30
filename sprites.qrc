@@ -4,5 +4,9 @@
         <file>sprites/puntos_apuntado.png</file>
         <file>sprites/piedra.png</file>
         <file>sprites/cetro_faraon.png</file>
+        <file>sprites/cactus.png</file>
+        <file>sprites/casas.png</file>
+        <file>sprites/marco_pintado.png</file>
+        <file>sprites/brocha.png</file>
     </qresource>
 </RCC>
