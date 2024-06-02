@@ -4,7 +4,7 @@ faraon::faraon(qreal _x, qreal _y) : Personaje(_x,_y)
 {
     spriteX = 396;
     dir = 'a';
-    vidas = 3;
+    vidas = 1;
 
     image = new QPixmap(":/sprites/sprite.png");
 

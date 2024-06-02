@@ -9,14 +9,12 @@
 #include <QPixmap>
 #include <pared.h>
 #include <proyectil.h>
+#include <QFile>
 
 class Personaje:public QObject,
              public QGraphicsPixmapItem //hereda de QObject (para características de objetos de Qt) y de QGraphicsPixmapItem (para objetos gráficos en una escena gráfica de Qt).
 {
-    Q_OBJECT
-
-private:
-    bool bandera = false;  
+    Q_OBJECT 
 
 protected:
     QPixmap *image;
@@ -40,12 +38,11 @@ public:
     void setSprite();
     pared *getSombra_apuntado() const;
     void setSombra_apuntado(pared *newSombra_apuntado);
-    bool getBandera() const;
-    void setBandera(bool newBandera);
     qreal posY_in;
     float tiempoTrans = 0;
     void saltar();
     QList<Proyectil *> piedras;
+    QFile *dialogue;
 
 };
 #endif // PERSONAJE_H

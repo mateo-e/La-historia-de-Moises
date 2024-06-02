@@ -1,17 +1,5 @@
 #include "Personaje.h"
 
-//Definir el jugador y la imgen
-
-bool Personaje::getBandera() const
-{
-    return bandera;
-}
-
-void Personaje::setBandera(bool newBandera)
-{
-    bandera = newBandera;
-}
-
 void Personaje::saltar()
 {
     y = posY_in - (40 * tiempoTrans) + (0.5*9.8 * tiempoTrans * tiempoTrans);
@@ -25,6 +13,8 @@ Personaje::Personaje(qreal _x, qreal _y)
     spriteX = 201;
     vidas = 3;
     posY_in = _y;
+
+
 
 
     image = new QPixmap (":/sprites/sprite.png");

@@ -10,6 +10,8 @@
 #include <QPixmap>
 #include <faraon.h>
 #include <pared.h>
+#include <QFile>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,6 +26,7 @@ public:
     ~MainWindow();
     void set_escena(short num_escena);
     void update_proyectil();
+    void crear_mapa();
     QGraphicsScene *scene;
     void hmov(Proyectil *bola);
 
@@ -38,9 +41,11 @@ private:
     Ui::MainWindow *ui;
     QTimer *timer;
     QTimer *cronometro;
+    QList <pared *> paredes;
+    QList <faraon *> enemigos;
     faraon *villano;
     Personaje *moises;
-    short int tiempo = 0;
+    float tiempo = 0;
     short int num_escena = 0;
     bool Apuntando;
     short int angulo_tiro = 45;
@@ -50,6 +55,7 @@ private:
     pared *casa;
     pared *marco;
     pared *brocha;
+
 
 };
 #endif // MAINWINDOW_H

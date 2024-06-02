@@ -9,24 +9,29 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this); //This hace referencia a la clase MainWindow, configura la interfaz de usuario definida en el Qt designer
 
-    // se crea la escena 0 la cual corresponde al menu
 
-    set_escena(0); // se inicializa la primera escena
-
-    // manejo de cronometro dentro del juego
     cronometro = new QTimer;
     connect(cronometro, SIGNAL(timeout()), this, SLOT(aumentarCronometro()));
-
-
 
     // timer para manejo de eventos
     timer = new QTimer;
     connect(timer, SIGNAL(timeout()), this, SLOT(Actualizacion()));
 
+    // se crea la escena 0 la cual corresponde al menu
+
+    set_escena(3); // se inicializa la primera escena
+
+    // manejo de cronometro dentro del juego
+
+
+    ui->dialogo_lbl->hide();
+    ui->dialogo_lbl->setAlignment(Qt::AlignCenter);
     ui->lbl_cronometro->hide();
     ui->vida_label->hide();
     ui->Informacion->hide();
     Apuntando = false;
+
+
 }
 
 MainWindow::~MainWindow()
@@ -38,6 +43,7 @@ void MainWindow::set_escena(short int NewNum_escena)
 {
     ui->JugarBtn->show(); // se muestra el boton
     ui->context_lbl->show(); // se muestra el contexto historico del nivel
+
 
     switch(NewNum_escena)
     { // se cambia el contexto dependiendo de la escena
@@ -51,12 +57,14 @@ void MainWindow::set_escena(short int NewNum_escena)
 
     num_escena = NewNum_escena;
 
+    /*
     if(NewNum_escena != 0)
         delete scene; // se elimina escena anterior
+*/
 
 
 
-    scene = new QGraphicsScene(this); // se crea la nueva escena
+    scene = new QGraphicsScene(this); // se crea la nuweva escena
 
     scene->setSceneRect(0, 0, 1280, 720);
     ui->graphicsView->setScene(scene);
@@ -91,6 +99,9 @@ void MainWindow::set_escena(short int NewNum_escena)
             scene->addItem(moises);
             moises->num_proyectiles = 5; // se inicializa un numero de proyectiles para el personaje principal
 
+            moises->dialogue = new QFile(":/textos/dialogos.txt"); // se abre el archivo de dialogos
+            moises->dialogue->open(QIODevice::ReadOnly|QIODevice::Text);
+
             villano = new faraon(500,290);
             scene->addItem(villano);
             villano->num_proyectiles = 1;
@@ -108,6 +119,7 @@ void MainWindow::set_escena(short int NewNum_escena)
             cronometro->stop();
             timer->stop();
 
+            ui->dialogo_lbl->hide();
             ui->lbl_cronometro->hide();
             ui->vida_label->hide();
 
@@ -115,8 +127,8 @@ void MainWindow::set_escena(short int NewNum_escena)
             ui->Informacion->setGeometry(490,620,310,30);
             ui->Informacion->setAlignment(Qt::AlignCenter);
 
-            ui->lbl_cronometro->setText("70");
-            tiempo = 0;
+            ui->lbl_cronometro->setText("0");
+            tiempo = 79;
 
             background->setPos(bg_posx,-50);
 
@@ -144,17 +156,37 @@ void MainWindow::set_escena(short int NewNum_escena)
         case 3:
         { // escena de nivel 3
 
+            QPixmap backgroundImage(":/backgrounds/background_3.jpg");
+
+            background = scene->addPixmap(backgroundImage);
+
+            cronometro->stop();
+            timer->stop();
+
+            moises = new Personaje(280,320);
+            scene->addItem(moises);
+
+
+
+            background->setPos(0,-1350); // se posiciona el background
+
+            crear_mapa();// creacion del mapa junto con personajes
+
             break;
         }
 
         case 4:
         { // escena de juego perdido
+            ui->dialogo_lbl->hide();
             ui->lbl_cronometro->hide();
-            ui->Informacion->hide();
             ui->context_lbl->hide();
-            ui->JugarBtn->hide();
             ui->vida_label->hide();
 
+
+            ui->Informacion->show(); // label que muestra la razon de perdida
+            ui->Informacion->setGeometry(495,270,310,30);
+            ui->Informacion->setAlignment(Qt::AlignCenter);
+            ui->JugarBtn->setText("JUGAR DE NUEVO");
         }
 
         case 5:
@@ -162,6 +194,51 @@ void MainWindow::set_escena(short int NewNum_escena)
 
         }
         }
+}
+
+void MainWindow::crear_mapa()
+{
+    QFile mapa(":/textos/mapa.txt");
+    mapa.open(QIODevice::ReadOnly|QIODevice::Text);
+
+    if(!mapa.isOpen())
+        return;
+
+    QString linea = " ";
+
+    while(linea != "") // obtengo cada una de las lienas
+    {
+        linea = mapa.readLine();
+
+        int actual_pos = 0,ant_pos = 0,x,y,w,h;
+        for(int i = 1; linea.indexOf(",",actual_pos+1) != -1; i++) // busco el separador
+        {
+            QString coord_str;
+
+            actual_pos = linea.indexOf(",",actual_pos +1);
+
+
+            for(int u = ant_pos; u < actual_pos ; u++)
+                coord_str.push_back(linea[u]);
+
+
+            switch(i)
+            {
+                // se rellena cada coordenada
+            case 1:x = coord_str.toInt(); break;
+            case 2:y = coord_str.toInt(); break;
+            case 3:w = coord_str.toInt(); break;
+            case 4:h = coord_str.toInt(); break;
+            }
+
+            ant_pos = actual_pos + 1;
+        }
+        paredes.push_back(new pared(x,y,w,h));
+        scene->addItem(paredes.back());
+    }
+
+    mapa.close();
+
 }
 
 
@@ -199,6 +276,9 @@ void MainWindow::Actualizacion()
             if((moises->piedras.at(i))->velIn < 1 or moises->piedras.at(i)->posX == 1000)
             {
                 (moises->piedras.at(i))->pintar = false; // detiene la animacion
+                moises->piedras.at(i)->posX = 1000;
+                moises->piedras.at(i)->posY = 1000;
+                moises->piedras.at(i)->setPos(1000,1000);
             }
             else
             {
@@ -211,13 +291,14 @@ void MainWindow::Actualizacion()
         // accion y movimiento del faraon
         std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-        short int numeroAleatorio = std::rand() % 3 + 1;
+        short int numeroAleatorio = std::rand() % 4 + 1;
 
         villano->setTransformOriginPoint(villano->boundingRect().center());
 
         switch(numeroAleatorio)
         {
             case 1:
+            case 2:
             {// atacar jugador
 
                 if(! villano->proy_lanzado) // si el faraon ya tiene un proyectil lanzado no se le permite lanzar mas hasta que se destruya el actual
@@ -247,7 +328,10 @@ void MainWindow::Actualizacion()
                 ui->vida_label->setText(QString::number(moises->vidas) + " - " + QString::number(villano->vidas)); // se actualiza el contador de vidas
 
                 if(moises->vidas == 0)
+                {
                     set_escena(4); // escena de juego perdido
+                    ui->Informacion->setText("TE HAZ QUEDADO SIN VIDAS!");
+                }
                 return;
             }
 
@@ -262,11 +346,16 @@ void MainWindow::Actualizacion()
                 villano->lanza->tiempoTrans += 0.15;
             }
         }
+
+        if(ui->dialogo_lbl->isVisible())
+            ui->dialogo_lbl->setGeometry((moises->x * 2) - 160, (moises->y * 2) - 30,390,30); // el cuadro de dialogo persigue al jugador
     }
 
     else if(num_escena == 2)
     {
         // actualizacion del background
+
+
 
         bg_posx -= (tiempo /10 + 3)*2; // se desplaza el background
 
@@ -309,14 +398,21 @@ void MainWindow::Actualizacion()
                 casa->cont = 0;
         }
 
-        if(marco->posx < -150)
+        if(marco->posx < -30)
         {
+            marco->posx = 1000;
             marco->setPos(1000,marco->posy);
             marco->hide();
-            brocha->show();
+
+            if(brocha->isVisible())
+            {
+                set_escena(4);
+                ui->Informacion->setText("DEJASTE UNA CASA SIN PINTAR!");
+                return;
+            }
         }
 
-        switch(casa->cont)// se ajusta su posicion dependiendo de la casa
+        switch(casa->cont)// se ajusta su posicion del marco dependiendo de la casa
         {
         case 0:
             marco->posy = casa->posy + 87;
@@ -368,18 +464,12 @@ void MainWindow::Actualizacion()
             break;
         }
 
-
-        if(moises->collidesWithItem(brocha,Qt::IntersectsItemBoundingRect) || marco->isVisible()) // si se agarra la brocha
+        if(moises->collidesWithItem(brocha,Qt::IntersectsItemBoundingRect) and brocha->isVisible()) // si se agarra la brocha
         {
             marco->show();
             brocha->hide();
             moises->cont_casas++;
-
-
             ui->Informacion->setText("NUMERO DE PUERTAS PINTADAS: " + QString::number(moises->cont_casas));
-
-
-            marco->setPos(marco->posx,marco->posy); // se teletransporta el marco a la casa
         }
 
 
@@ -387,6 +477,24 @@ void MainWindow::Actualizacion()
         {
             brocha->posx = marco->posx + 5; // se coloca la brocha en el medio de la casa
             brocha->setPos(brocha->posx,brocha->posy);
+        }
+        else if(casa->posx <= 640 and casa->posx > 0 and !marco->isVisible()) // si la casa se comienza a ver y el marco no esta puesto, aparece la brocha
+        {
+            brocha->posx = 10000;
+            brocha->show();
+        }
+
+        if(marco->isVisible())
+        {
+            marco->posx-= 3;
+            marco->setPos(marco->posx,marco->posy); // se teletransporta el marco a la casa
+        }
+
+        if(moises->x < -10) //mecanica de perdida: moises se queda atras de la pantalla
+        {
+            set_escena(4);
+            ui->Informacion->setText("LA PLAGA TE HA ALCANZADO!");
+            return;
         }
 
 
@@ -415,8 +523,6 @@ void MainWindow::Actualizacion()
                 moises->tiempoTrans = 0; // se verifica cuando ha llegado a su posicion inicial
         }
 
-
-
     }
     else if(num_escena == 3)
     {
@@ -427,13 +533,46 @@ void MainWindow::Actualizacion()
 void MainWindow::aumentarCronometro()
 {
     tiempo++;
-    ui->lbl_cronometro->setText(QString::number(70 - tiempo)); // se coloca el nuevo tiempo
 
-    // se evalua perdida
-    if(tiempo == 70)
+    switch(num_escena) // seleccion de cada uno de los comportamientos del cronometro dependiendo la escena
     {
-        ui->lbl_cronometro->hide();
-        set_escena(4); // escena de juego perdido
+
+    case 1:
+    {
+        ui->lbl_cronometro->setText(QString::number(70 - tiempo)); // se coloca el nuevo tiempo
+
+        // se evalua perdida
+
+
+        if(tiempo == 70)
+        {
+            ui->lbl_cronometro->hide();
+            set_escena(4); // escena de juego perdido
+            ui->Informacion->setText("TE HAZ QUEDADO SIN TIEMPO!");
+        }
+        break;
+    }
+    case 2:
+    {
+        ui->lbl_cronometro->setText(QString::number(tiempo/100 * 80) + " %"); // se coloca el nuevo tiempo
+
+        if(tiempo == 80)
+        {
+            ui->lbl_cronometro->hide();
+            set_escena(3); // se pasa al siguiente nivel
+        }
+    }
+    case 3:
+    {
+
+        if(tiempo / 1  == 0) // aparece un nuevo soldado cada 10 segundos
+        {
+            enemigos.append(new faraon(640,240));
+
+            scene->addItem(enemigos.back());
+        }
+    }
+
     }
 
 }
@@ -473,6 +612,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             { // entra en modo apuntado
 
                 Apuntando = true; // variable que nos indica que el personaje esta en modo apuntar para lanzar el proyectil
+                ui->dialogo_lbl->hide();
 
 
                 // necesario para que el sprite quede mirando haciea el enemigo
@@ -492,49 +632,19 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
                 // se muestra un label con la informacion del angulo de tiro
                 ui->Informacion->setText((QString::number(angulo_tiro)).append("°"));
-                ui->Informacion->setGeometry(moises->x * 2 - 10,moises->y * 2 - 7,180,20);
+                ui->Informacion->setGeometry(moises->x * 2 - 10,moises->y * 2 - 7,170,20);
                 ui->Informacion->show();
 
                 break;
             }
-
             }
         }
 
-        else if(! moises->getBandera()) // esta variable se hace verdadera cuando se quiere pasar a la mecanica de seleccion de potencia
+        else
         { // en caso de que el personaje esté apuntando
 
             switch(event->key()) {
 
-            case Qt::Key_A:
-                if(angulo_tiro + 2 < 90) // se limita el angulo
-                {
-                    angulo_tiro += 2;
-                    moises->sombra_apuntado->setRotation(-angulo_tiro);
-                }
-                break;
-            case Qt::Key_D:
-
-                if(angulo_tiro - 2 > 45) // se limita el angulo
-                {
-                    angulo_tiro -= 2;
-                    moises->sombra_apuntado->setRotation(-angulo_tiro);
-                }
-                break;
-
-            case Qt::Key_Q:
-
-                moises->setBandera(true); // bandera para pasar a la mecanica de seleccion de potencia
-            }
-
-            ui->Informacion->setText((QString::number(angulo_tiro)).append("°")); // label que muestra el angulo de tiro
-
-        }
-
-        else // una vez se ha calculado el angulo de tiro
-        {
-            // calculo de la potencia del proyectil
-            switch(event->key()) {
             case Qt::Key_W:
                 if(moises->sombra_apuntado->largoTotal < 140)
                 {
@@ -554,8 +664,32 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
                 }
                 break;
+
+            case Qt::Key_A:
+                if(angulo_tiro + 2 < 90) // se limita el angulo
+                {
+                    angulo_tiro += 2;
+                    moises->sombra_apuntado->setRotation(-angulo_tiro);
+                    ui->Informacion->setText((QString::number(angulo_tiro)).append("°")); // label que muestra el angulo de tiro
+                }
+                break;
+            case Qt::Key_D:
+
+                if(angulo_tiro - 2 > 45) // se limita el angulo
+                {
+                    angulo_tiro -= 2;
+                    moises->sombra_apuntado->setRotation(-angulo_tiro);
+                    ui->Informacion->setText((QString::number(angulo_tiro)).append("°")); // label que muestra el angulo de tiro
+                }
+                break;
+
             case Qt::Key_Q:
                 //lanzar
+
+                // se muestra dialogo
+                ui->dialogo_lbl->show();
+                ui->dialogo_lbl->setText(moises->dialogue->readLine());
+
 
                 if(moises->num_proyectiles > 0)
                 {
@@ -566,25 +700,19 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 }
                 else
                 {
+                    ui->Informacion->setText("TE HAZ QUEDADO SIN PROYECTILES!");
                     set_escena(4); // juego perdido por falta de proyectiles
 
                     break;
                 }
 
                 Apuntando = false; // se sale del modo calcular angulo
-                moises->setBandera(false); // se sale del modo calcular potencia
                 delete moises->sombra_apuntado;
                 ui->Informacion->hide();
 
-
-
-
                 break;
             }
-
-
         }
-
     }
 
     else if(num_escena == 2)
@@ -634,13 +762,38 @@ void MainWindow::on_JugarBtn_clicked()
     timer->start(20);
     cronometro->start(1000);
 
-
-    if(num_escena== 1 || num_escena== 3) // solo en las escenas 1 y 3 se muestra el label de vida
+    switch(num_escena) // definicion de diferentes comportamientos del boton de inicio dependiendo de la escena
+    {
+    case 1:
+    {
         ui->vida_label->show();
-    else if(num_escena == 2)
+        break;
+    }
+    case 2:
     {
         ui->Informacion->show();
         cactus->show();
+        break;
+    }
+    case 3:
+    {
+
+        break;
+    }
+    case 4:
+    {
+        set_escena(1); // se manda al nivel 1
+        ui->Informacion->hide();
+        ui->JugarBtn->setText("INICIAR NIVEL");
+        Apuntando = false;
+        tiempo = 0;
+        return;
+    }
+    case 5: // escena de juego ganado
+    {
+
+        break;
+    }
     }
 
     ui->lbl_cronometro->show();

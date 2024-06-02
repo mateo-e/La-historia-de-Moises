@@ -12,7 +12,6 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     void perseguirJugador();
-    void evitarProyectil();
     void setSprite();
     void despl_x();
     bool proy_lanzado = false;

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>textos/dialogos.txt</file>
+        <file>textos/mapa.txt</file>
+    </qresource>
+</RCC>
