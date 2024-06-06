@@ -8,10 +8,13 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QPixmap>
-#include <faraon.h>
-#include <pared.h>
+#include <villano.h>
+#include <obstaculo.h>
 #include <QFile>
+#include <vector>
 #include <QList>
+#include <QRandomGenerator>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,6 +30,7 @@ public:
     void set_escena(short num_escena);
     void update_proyectil();
     void crear_mapa();
+    void perseguirJugador(villano * entidad);
     QGraphicsScene *scene;
     void hmov(Proyectil *bola);
 
@@ -35,15 +39,19 @@ private slots:
     void Actualizacion();
     void aumentarCronometro();
     void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
     void on_JugarBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
     QTimer *cronometro;
-    QList <pared *> paredes;
-    QList <faraon *> enemigos;
-    faraon *villano;
+    QList <obstaculo *> obstaculos;
+    QList <villano *> enemigos;
+    QList <Personaje *> hebreos;
+    bool evaluarColision(Personaje * entidad,char dir);
+    bool enemigoColisiona(villano * entidad,char dir);
+    villano *faraon;
     Personaje *moises;
     float tiempo = 0;
     short int num_escena = 0;
@@ -51,11 +59,9 @@ private:
     short int angulo_tiro = 45;
     short int bg_posx = 0;
     QGraphicsPixmapItem *background;
-    pared *cactus;
-    pared *casa;
-    pared *marco;
-    pared *brocha;
-
-
+    obstaculo *cactus;
+    obstaculo *casa;
+    obstaculo *marco;
+    obstaculo *brocha;
 };
 #endif // MAINWINDOW_H

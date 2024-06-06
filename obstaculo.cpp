@@ -1,11 +1,11 @@
-#include "pared.h"
+#include "obstaculo.h"
 
-pared::pared()
+obstaculo::obstaculo()
 {
 
 }
 
-pared::pared(int x, int y, int w, int h)
+obstaculo::obstaculo(int x, int y, int w, int h)
 {
     this->posx=x;
     this->posy=y;
@@ -13,7 +13,7 @@ pared::pared(int x, int y, int w, int h)
     this->w=w;
 }
 
-pared::pared(int x, int y, int w, int h, QString im)
+obstaculo::obstaculo(int x, int y, int w, int h, QString im)
 {
     this->posx=x;
     this->posy=y;
@@ -22,16 +22,14 @@ pared::pared(int x, int y, int w, int h, QString im)
     this->imageName = im;
 }
 
-QRectF pared::boundingRect() const
+QRectF obstaculo::boundingRect() const
 {
     return QRectF(posx,posy,w,h);
 }
 
-void pared::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void obstaculo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-
-
-    if(imageName == ":/sprites/puntos_apuntado.png") // si se quiere que la pared tenga algun aspecto en especifio
+    if(imageName == ":/sprites/puntos_apuntado.png") // si se quiere que la obstaculo tenga algun aspecto en especifio
     {
         QPixmap *aspecto = new QPixmap(imageName);
         painter->drawPixmap(posx,posy,largoTotal,30,*aspecto);
@@ -58,8 +56,7 @@ void pared::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
     else
     {
-        painter->setBrush(Qt::black);
-        painter->setPen(Qt::blue);
+        painter->setBrush(Qt::yellow);
         painter->drawRect(boundingRect());
     }
 

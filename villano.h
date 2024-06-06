@@ -1,21 +1,22 @@
-#ifndef FARAON_H
-#define FARAON_H
+#ifndef faraon_H
+#define faraon_H
 #include "Personaje.h"
 #include <cstdlib> // Necesario para la función rand()
 #include <ctime>   // Necesario para inicializar la semilla
 #include <iostream>
 
-class faraon : public Personaje
+class villano : public Personaje
 {
 public:
-    faraon(qreal _x, qreal _y);
+    villano(qreal _x, qreal _y);
     QRectF boundingRect() const override;
+    bool es_faraon = true;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void perseguirJugador();
     void setSprite();
     void despl_x();
     bool proy_lanzado = false;
     Proyectil *lanza;
+    bool mover = true;
 };
 
-#endif // FARAON_H
+#endif // faraon_H

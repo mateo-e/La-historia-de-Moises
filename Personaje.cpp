@@ -14,8 +14,24 @@ Personaje::Personaje(qreal _x, qreal _y)
     vidas = 3;
     posY_in = _y;
 
+    image = new QPixmap (":/sprites/sprite.png");
 
+    setPos(_x,_y);
+}
 
+Personaje::Personaje(qreal _x, qreal _y, char _aspecto)
+{
+    x = _x;
+    y = _y;
+
+    aspecto = _aspecto;
+
+    switch(aspecto)
+    {
+    case '1': spriteX = 67*cont + 201; break;
+    case '2': spriteX = 67*cont + 402; break;
+    case '3': spriteX = 67*cont + 603; break;
+    }
 
     image = new QPixmap (":/sprites/sprite.png");
 
@@ -26,7 +42,7 @@ Personaje::Personaje(qreal _x, qreal _y)
 
 QRectF Personaje::boundingRect() const
 {
-    return QRectF(x,y,66, 66);
+    return QRectF(x+5,y+5,45, 58);
 }
 
 void Personaje::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -58,7 +74,12 @@ void Personaje::moveBy(short dx,short dy)
 
 void Personaje::setSprite()
 {
-    spriteX = 67*cont + 201;
+    switch(aspecto)
+    {
+    case '1': spriteX = 67*cont + 201; break;
+    case '2': spriteX = 67*cont + 402; break;
+    case '3': spriteX = 67*cont + 603; break;
+    }
     cont++;
     if(cont==3){cont=0;}
 }

@@ -7,7 +7,7 @@
 #include <QGraphicsScene>
 #include <QLabel>
 #include <QPixmap>
-#include <pared.h>
+#include <obstaculo.h>
 #include <proyectil.h>
 #include <QFile>
 
@@ -19,30 +19,30 @@ class Personaje:public QObject,
 protected:
     QPixmap *image;
     short int cont=0;
-    short int spriteX;
-
 
 public:
+    Personaje(qreal _x, qreal _y);
+    Personaje(qreal _x, qreal _y,char _aspecto);
+    short int spriteX;
     short int num_proyectiles = 3, cont_casas = 0;
     short int vidas;
     char dir = 'd';
+    char aspecto = '1';
     qreal x;
     qreal y;
-    pared *sombra_apuntado;
-    Personaje(qreal _x, qreal _y);
+    obstaculo *sombra_apuntado;
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     // Movimiento
     void moveBy(short int dx, short int dy);
     //Simular caminar
     void setSprite();
-    pared *getSombra_apuntado() const;
-    void setSombra_apuntado(pared *newSombra_apuntado);
+    obstaculo *getSombra_apuntado() const;
+    void setSombra_apuntado(obstaculo *newSombra_apuntado);
     qreal posY_in;
     float tiempoTrans = 0;
     void saltar();
     QList<Proyectil *> piedras;
     QFile *dialogue;
-
 };
 #endif // PERSONAJE_H

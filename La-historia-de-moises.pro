@@ -10,18 +10,18 @@ CONFIG += c++17
 
 SOURCES += \
     Personaje.cpp \
-    faraon.cpp \
     main.cpp \
     mainwindow.cpp \
-    pared.cpp \
-    proyectil.cpp
+    obstaculo.cpp \
+    proyectil.cpp \
+    villano.cpp
 
 HEADERS += \
     Personaje.h \
-    faraon.h \
     mainwindow.h \
-    pared.h \
-    proyectil.h
+    obstaculo.h \
+    proyectil.h \
+    villano.h
 
 FORMS += \
     mainwindow.ui
