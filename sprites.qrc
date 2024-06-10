@@ -8,5 +8,7 @@
         <file>sprites/casas.png</file>
         <file>sprites/marco_pintado.png</file>
         <file>sprites/brocha.png</file>
+        <file>sprites/mar_1.png</file>
+        <file>sprites/mar_2.png</file>
     </qresource>
 </RCC>

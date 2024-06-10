@@ -54,6 +54,7 @@ private:
     villano *faraon;
     Personaje *moises;
     float tiempo = 0;
+    short int cont = 0;
     short int num_escena = 0;
     bool Apuntando;
     short int angulo_tiro = 45;

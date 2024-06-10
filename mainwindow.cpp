@@ -619,32 +619,69 @@ void MainWindow::Actualizacion()
     else if(num_escena == 3)
     {
 
-
-        for(int i = 0; i < enemigos.size() and enemigos.at(i)->mover; i++) // se actualiza cada uno de los enemigos
+        if(! enemigos.isEmpty())
         {
-            perseguirJugador(enemigos.at(i)); // algoritmo de persecusion
-
-            switch(enemigos.at(i)->dir)
+            for(int i = 0; i < enemigos.size() and enemigos.at(i)->mover; i++) // se actualiza cada uno de los enemigos
             {
-            case 'w': enemigos.at(i)->setPos(enemigos.at(i)->x,enemigos.at(i)->y -= 2); break;
-            case 's': enemigos.at(i)->setPos(enemigos.at(i)->x,enemigos.at(i)->y += 2); break;
-            case 'a': enemigos.at(i)->setPos(enemigos.at(i)->x -= 2,enemigos.at(i)->y); break;
-            case 'd': enemigos.at(i)->setPos(enemigos.at(i)->x += 2,enemigos.at(i)->y); break;
+                perseguirJugador(enemigos.at(i)); // algoritmo de persecusion
+
+                switch(enemigos.at(i)->dir)
+                {
+                case 'w': enemigos.at(i)->setPos(enemigos.at(i)->x,enemigos.at(i)->y -= 2); break;
+                case 's': enemigos.at(i)->setPos(enemigos.at(i)->x,enemigos.at(i)->y += 2); break;
+                case 'a': enemigos.at(i)->setPos(enemigos.at(i)->x -= 2,enemigos.at(i)->y); break;
+                case 'd': enemigos.at(i)->setPos(enemigos.at(i)->x += 2,enemigos.at(i)->y); break;
+                }
+                enemigos.at(i)->setSprite();
             }
-            enemigos.at(i)->setSprite();
+
+            if(!enemigos.at(0)->mover and background->y() < -620)
+            {
+                background->setPos(background->x(),background->y() + 10);
+                moises->y += 6;
+                moises->setPos(moises->x,moises->y);
+                for(short int i = 0; i < obstaculos.size(); i++)
+                    obstaculos.at(i)->posy += 10; // se mueve cada una de las obstaculos
+                for(short int i = 0; i < enemigos.size(); i++)
+                    enemigos.at(i)->y += 20;
+            }
+
+            else if(background->y() >= -620)
+            {
+                enemigos.clear();
+                obstaculos.clear();
+            }
         }
 
-        if(!enemigos.at(0)->mover and background->y() < -650)
+        else // actualizacion de segunda parte del nivel 3
         {
-            background->setPos(background->x(),background->y() + 10);
-            moises->y += 19;
-            for(short int i = 0; i < obstaculos.size(); i++)
-                obstaculos.at(i)->posy += 10; // se mueve cada una de las obstaculos
-            for(short int i = 0; i < enemigos.size(); i++)
-                enemigos.at(i)->y += 19;
+
+            cont ++;
+
+            if(cont == 2)
+                cont = 0;
+
+
+            switch(cont)
+            {
+            case 0:
+            {
+                QPixmap mar(":/sprites/mar_1.png");
+                scene->addPixmap(mar);
+                break;
+            }
+            case 1:
+            {
+                QPixmap mar(":/sprites/mar_2.png");
+                scene->addPixmap(mar);
+                break;
+            }
+            }
+
+
+
+
         }
-
-
 
     }
 }
@@ -686,7 +723,7 @@ void MainWindow::aumentarCronometro()
     {
         ui->lbl_cronometro->setText(QString::number(tiempo));
 
-        if((int)tiempo % 10  == 0 and enemigos.size() < 7) // aparece un nuevo soldado cada 10 segundos mientras haya menos de 6
+        if((int)tiempo % 10  == 0 and enemigos.size() < 7 and !obstaculos.isEmpty()) // aparece un nuevo soldado cada 10 segundos mientras haya menos de 6
         {
             enemigos.push_back(new villano(415,445));
             enemigos.back()->spriteX = 800;
@@ -873,7 +910,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
         case Qt::Key_W:
             moises->dir = 'w';
-            if(moises->y - 5 > 0 and !evaluarColision(moises,'w'))
+            if(moises->y - 5 > 0 and ! evaluarColision(moises,'w'))
                 moises->moveBy(0, -5);
             break;
 
@@ -881,8 +918,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             moises->dir = 's';
             if(moises->y + 5 < 430 and ! evaluarColision(moises,'s'))
                 moises->moveBy(0, 5);
-
-
             break;
         }
 
@@ -928,6 +963,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
+    if(obstaculos.isEmpty())
+        return;
+
     if(num_escena == 3)
     {
         for(short int i = 0; i < obstaculos.size();i++) //se evalua colision con cada una de las obstaculos
@@ -1020,7 +1058,8 @@ void MainWindow::on_JugarBtn_clicked()
 
 bool MainWindow::evaluarColision(Personaje *entidad, char dir)
 {
-
+    if(obstaculos.isEmpty())
+        return false;
     switch(dir) // se mueve la entidad a la posicion deseada con el fin de probar si colisiona en ese lugar
     {
     case 'w': entidad->setPos(entidad->x,entidad->y - 5); break;
@@ -1047,6 +1086,8 @@ bool MainWindow::evaluarColision(Personaje *entidad, char dir)
 
 bool MainWindow::enemigoColisiona(villano *entidad, char dir)
 {
+    if(obstaculos.isEmpty())
+        return false;
     switch(dir) // se mueve la entidad a la posicion deseada con el fin de probar si colisiona en ese lugar
     {
     case 'w': entidad->setPos(entidad->x,entidad->y - 5); break;
@@ -1057,6 +1098,7 @@ bool MainWindow::enemigoColisiona(villano *entidad, char dir)
 
     case 'a': entidad->setPos(entidad->x - 3,entidad->y);break;
     }
+
 
     for(short int i = 0; i < obstaculos.size();i++) //se evalua colision con cada una de las obstaculos
     {
