@@ -44,8 +44,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QTimer *timer;
-    QTimer *cronometro;
+    QTimer *timer, *cronometro;
     QList <obstaculo *> obstaculos;
     QList <villano *> enemigos;
     QList <Personaje *> hebreos;
@@ -54,15 +53,10 @@ private:
     villano *faraon;
     Personaje *moises;
     float tiempo = 0;
-    short int cont = 0;
-    short int num_escena = 0;
+    short int niv_max = 1,cont = 0,num_escena = 0,angulo_tiro = 45,bg_posx = 0;
     bool Apuntando;
-    short int angulo_tiro = 45;
-    short int bg_posx = 0;
-    QGraphicsPixmapItem *background;
-    obstaculo *cactus;
-    obstaculo *casa;
-    obstaculo *marco;
-    obstaculo *brocha;
+    QGraphicsPixmapItem *background, *contexto;
+    obstaculo *cactus,*casa,*marco,*brocha;
+
 };
 #endif // MAINWINDOW_H

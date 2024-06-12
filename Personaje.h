@@ -23,13 +23,9 @@ protected:
 public:
     Personaje(qreal _x, qreal _y);
     Personaje(qreal _x, qreal _y,char _aspecto);
-    short int spriteX;
-    short int num_proyectiles = 3, cont_casas = 0;
-    short int vidas;
-    char dir = 'd';
-    char aspecto = '1';
-    qreal x;
-    qreal y;
+    short int spriteX,num_proyectiles = 3, cont_casas = 0,vidas;
+    char dir = 'd',aspecto = '1';
+    qreal x , y, posY_in,tiempoTrans = 0;
     obstaculo *sombra_apuntado;
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
@@ -37,10 +33,6 @@ public:
     void moveBy(short int dx, short int dy);
     //Simular caminar
     void setSprite();
-    obstaculo *getSombra_apuntado() const;
-    void setSombra_apuntado(obstaculo *newSombra_apuntado);
-    qreal posY_in;
-    float tiempoTrans = 0;
     void saltar();
     QList<Proyectil *> piedras;
     QFile *dialogue;

@@ -15,27 +15,23 @@ class QTimer;
 class Proyectil : public QGraphicsItem
 {
 public:
-    Proyectil(QGraphicsView *view, float velIn,  qreal xIn, qreal yIn, float theta, QGraphicsItem *parent = nullptr); //Es un constructor que puede tomar un puntero a un padre
+    Proyectil(QGraphicsView *view, qreal velIn,  qreal xIn, qreal yIn, qreal theta, QGraphicsItem *parent = nullptr); //Es un constructor que puede tomar un puntero a un padre
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
     // Movimiento
     void moveBy(int dx, int dy);
-    void movParabolico(float *dt);
-    qreal posX;
-    qreal posY;
-    float velIn;
+    void movParabolico(qreal *dt);
+    qreal posX,posY,velIn,tiempoTrans;
     bool pintar = true;
-    float tiempoTrans;
 
 private: //Podrían ser públicas
 
     QGraphicsView *view;
-    float rotacion = 0;
     QSize viewRect;
-    float theta, dir;
-    qreal xIn, yIn;
+    qreal xIn, yIn, rotacion = 0,theta, dir;
+
     QPixmap *aspecto;
 };
 

@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // se crea la escena 0 la cual corresponde al menu
 
-    set_escena(3); // se inicializa la primera escena
+    set_escena(0); // se inicializa la primera escena
 
     ui->dialogo_lbl->hide();
     ui->dialogo_lbl->setAlignment(Qt::AlignCenter);
@@ -37,23 +37,12 @@ MainWindow::~MainWindow()
 void MainWindow::set_escena(short int NewNum_escena)
 {
     ui->JugarBtn->show(); // se muestra el boton
-    ui->context_lbl->show(); // se muestra el contexto historico del nivel
-
-    switch(NewNum_escena)
-    { // se cambia el contexto dependiendo de la escena
-    case 1: ui->context_lbl->setText("CONTEXTO HISTORICO: \nExistía un bebe, que fue llevado por la corriente de un rio, \neste es encontrado por la esposa del faraón \ny le ponen por nombre Moisés. \nPasados los años este se da cuenta de que viene de un pueblo \nHebreo y ahora quiere que su pueblo sea liberado. \nUsa las teclas A y D para moverte y Q para lanzar \nTienes 5 oportunidade \n HAZ QUE EL FARAON CAIGA!");break;
-    case 2: ui->context_lbl->setText("CONTEXTO HISTORICO: \nAl ver que el faraón no desea liberar al pueblo hebreo, \nDios desata 10 plagas en Egipto, \nEn la ultima Moisés le dice al pueblo Hebreo \nque pinte el marco superior de la puerta con sangre de cordero \nUsa la tecla W para saltar. \nDeberas pintar todas las casas que aparezcan en tu camino. \nPROTEGE A TU PUEBLO DE LA PLAGA!");break;
-    case 3: ui->context_lbl->setText("CONTEXTO HISTORICO: \n  ");break;
-    }
-
-    ui->context_lbl->setAlignment(Qt::AlignCenter);
-
 
     num_escena = NewNum_escena;
-/*
-    if(NewNum_escena != 0)
+
+    if(NewNum_escena != 0)  
         delete scene; // se elimina escena anterior
-*/
+
     scene = new QGraphicsScene(this); // se crea la nuweva escena
 
     scene->setSceneRect(0, 0, 1280, 720);
@@ -64,6 +53,10 @@ void MainWindow::set_escena(short int NewNum_escena)
     {
         case 0:
         { // escena de inicio
+
+            QPixmap backgroundImage(":/backgrounds/background_0.jpg");
+
+            background = scene->addPixmap(backgroundImage);
             break;
         }
 
@@ -84,6 +77,11 @@ void MainWindow::set_escena(short int NewNum_escena)
 
             background = scene->addPixmap(backgroundImage);
 
+            QPixmap text(":/backgrounds/contexto_1.png");
+
+            contexto = scene->addPixmap(text);
+
+            contexto->show(); // se muestra el contexto historico del nivel
 
             moises = new Personaje(100,290);
             scene->addItem(moises);
@@ -96,7 +94,7 @@ void MainWindow::set_escena(short int NewNum_escena)
             scene->addItem(faraon);
             faraon->num_proyectiles = 1;
 
-            background->setPos(0,-400);
+            background->setPos(0,-25);
             break;
         }
         case 2:
@@ -121,6 +119,12 @@ void MainWindow::set_escena(short int NewNum_escena)
             tiempo = 0;
 
             background->setPos(bg_posx,-50);
+
+            QPixmap text(":/backgrounds/contexto_2.png");
+
+            contexto = scene->addPixmap(text);
+
+            contexto->show(); // se muestra el contexto historico del nivel
 
 
             casa = new obstaculo(1500,175,350,300,":/sprites/casas.png");
@@ -179,7 +183,6 @@ void MainWindow::set_escena(short int NewNum_escena)
             moises = new Personaje(420,270);
             scene->addItem(moises);
 
-
             moises->dir = 's';
             moises->setScale(0.5);
 
@@ -197,75 +200,118 @@ void MainWindow::set_escena(short int NewNum_escena)
             ui->Informacion->setText("Numero de hebreos salvados: 0/10");
             ui->Informacion->setAlignment(Qt::AlignCenter);
             ui->Informacion->setStyleSheet("color: red;");
+            ui->Informacion->hide();
 
-            obstaculos.at(0)->hide();
-            obstaculos.removeFirst(); // se elimina el obstaculo que da camino hacia el mar
+            QPixmap text(":/backgrounds/contexto_3.png");
+
+            contexto = scene->addPixmap(text);
+
+            contexto->show(); // se muestra el contexto historico del nivel
 
             break;
         }
 
         case 4:
         { // escena de juego perdido
+
+
+            switch(niv_max) // se cambia el fondo dependiendo de su nivel actual
+            {
+            case 1:
+            {
+                QPixmap backgroundImage(":/backgrounds/background_1.jpg");
+                background = scene->addPixmap(backgroundImage);
+                break;
+            }
+            case 2:
+            {
+                QPixmap backgroundImage(":/backgrounds/background_2.jpg");
+                background = scene->addPixmap(backgroundImage);
+                break;
+            }
+            case 3:
+            {
+                QPixmap backgroundImage(":/backgrounds/background_3.jpg");
+                background = scene->addPixmap(backgroundImage);
+                break;
+            }
+            }
+
+            QPixmap game_over(":/backgrounds/game_over.png");
+            scene->addPixmap(game_over);
+
             ui->dialogo_lbl->hide();
             ui->lbl_cronometro->hide();
-            ui->context_lbl->hide();
             ui->vida_label->hide();
-
-
             ui->Informacion->show(); // label que muestra la razon de perdida
             ui->Informacion->setGeometry(495,270,310,30);
             ui->Informacion->setAlignment(Qt::AlignCenter);
             ui->JugarBtn->setText("JUGAR DE NUEVO");
+            break;
         }
 
         case 5:
         { // escena de juego ganado
+            QPixmap backgroundImage(":/backgrounds/background_5.jpg");
 
+            background = scene->addPixmap(backgroundImage);
+            break;
         }
-        }
+    }
+
+
 }
 
 void MainWindow::crear_mapa()
 {
-    QFile mapa(":/textos/mapa.txt");
-    mapa.open(QIODevice::ReadOnly|QIODevice::Text);
-
-    if(!mapa.isOpen())
-        return;
-
-    QString linea = " ";
-
-    while(linea != "") // obtengo cada una de las lienas
+    try
     {
-        linea = mapa.readLine();
+        QFile mapa(":/textos/mapa.txt");
+        mapa.open(QIODevice::ReadOnly|QIODevice::Text);
 
-        int actual_pos = 0,ant_pos = 0,x,y,w,h;
-        for(int i = 1; linea.indexOf(",",actual_pos+1) != -1; i++) // busco el separador
+        if(!mapa.isOpen())
+            throw 1;
+
+        QString linea = " ";
+
+        while(linea != "") // obtengo cada una de las lienas
         {
-            QString coord_str;
+            linea = mapa.readLine();
 
-            actual_pos = linea.indexOf(",",actual_pos +1);
-
-
-            for(int u = ant_pos; u < actual_pos ; u++)
-                coord_str.push_back(linea[u]);
-
-
-            switch(i)
+            int actual_pos = 0,ant_pos = 0,x,y,w,h;
+            for(int i = 1; linea.indexOf(",",actual_pos+1) != -1; i++) // busco el separador
             {
-                // se rellena cada coordenada
-            case 1:x = coord_str.toInt(); break;
-            case 2:y = coord_str.toInt(); break;
-            case 3:w = coord_str.toInt(); break;
-            case 4:h = coord_str.toInt(); break;
-            }
+                QString coord_str;
 
-            ant_pos = actual_pos + 1;
+                actual_pos = linea.indexOf(",",actual_pos +1);
+
+
+                for(int u = ant_pos; u < actual_pos ; u++)
+                    coord_str.push_back(linea[u]);
+
+
+                switch(i)
+                {
+                    // se rellena cada coordenada
+                case 1:x = coord_str.toInt(); break;
+                case 2:y = coord_str.toInt(); break;
+                case 3:w = coord_str.toInt(); break;
+                case 4:h = coord_str.toInt(); break;
+                }
+
+                ant_pos = actual_pos + 1;
+            }
+            obstaculos.push_back(new obstaculo(x,y,w,h));
+            scene->addItem(obstaculos.back());
         }
-        obstaculos.push_back(new obstaculo(x,y,w,h));
-        scene->addItem(obstaculos.back());
+        mapa.close();
     }
-    mapa.close();
+    catch(short int num)
+    {
+        ui->Informacion->show();
+        ui->Informacion->setText("NO SE HA SIDO POSIBLE CARGAR EL MAPA PARA ESTE NIVEL");
+        set_escena(num);
+    }
 }
 
 void MainWindow::perseguirJugador(villano *entidad)
@@ -371,6 +417,7 @@ void MainWindow::Actualizacion()
                 {
                     ui->vida_label->hide();
                     timer->stop();
+                    niv_max = 2;
                     set_escena(2); // se pasa al siguiente nivel
                 }
                 return;
@@ -398,25 +445,17 @@ void MainWindow::Actualizacion()
 
         faraon->setTransformOriginPoint(faraon->boundingRect().center());
 
-        switch(numeroAleatorio)
+        if(numeroAleatorio < 3 and ! faraon->proy_lanzado)
         {
-            case 1:
-            case 2:
-            {// atacar jugador
-
-                if(! faraon->proy_lanzado) // si el faraon ya tiene un proyectil lanzado no se le permite lanzar mas hasta que se destruya el actual
-                {
-                    // se crea lanza del faraon y se añade a la escena
-                    faraon->proy_lanzado = true;
-                    faraon->lanza = new Proyectil(nullptr,-65,faraon->x,faraon->y,-45);
-                    faraon->lanza->setRotation(-45);
-                    faraon->lanza->setPos(faraon->x,faraon->y);
-                    scene->addItem(faraon->lanza);
-                    break;
-                }
-            }
-            default: faraon->despl_x(); break;
+            // se crea lanza del faraon y se añade a la escena
+            faraon->proy_lanzado = true;
+            faraon->lanza = new Proyectil(nullptr,-65,faraon->x,faraon->y,-45);
+            faraon->lanza->setRotation(-45);
+            faraon->lanza->setPos(faraon->x,faraon->y);
+            scene->addItem(faraon->lanza);
         }
+        else
+            faraon->despl_x();
 
         if(faraon->proy_lanzado)
         {
@@ -618,9 +657,10 @@ void MainWindow::Actualizacion()
 
     else if(num_escena == 3)
     {
-
         if(! enemigos.isEmpty())
         {
+            QPointF center1 = moises->mapToScene(moises->boundingRect().center());
+            qreal rango = 10;
             for(int i = 0; i < enemigos.size() and enemigos.at(i)->mover; i++) // se actualiza cada uno de los enemigos
             {
                 perseguirJugador(enemigos.at(i)); // algoritmo de persecusion
@@ -633,6 +673,23 @@ void MainWindow::Actualizacion()
                 case 'd': enemigos.at(i)->setPos(enemigos.at(i)->x += 2,enemigos.at(i)->y); break;
                 }
                 enemigos.at(i)->setSprite();
+
+                // verificion de choque con algun soldado
+                // Verificar la colisión después de aplicar transformaciones
+
+                QPointF center2 = enemigos.at(i)->mapToScene(enemigos.at(i)->boundingRect().center());
+                qreal distancia = QLineF(center1, center2).length();
+
+                if (distancia < rango)
+                {
+                    ui->Informacion->setText("LOS SOLDADOS TE HAN ALCANZADO!");
+                    set_escena(4);
+                    hebreos.clear();
+                    obstaculos.clear();
+                    enemigos.clear();
+                    return;
+                }
+
             }
 
             if(!enemigos.at(0)->mover and background->y() < -620)
@@ -655,32 +712,10 @@ void MainWindow::Actualizacion()
 
         else // actualizacion de segunda parte del nivel 3
         {
-
-            cont ++;
-
-            if(cont == 2)
-                cont = 0;
-
-
-            switch(cont)
-            {
-            case 0:
-            {
-                QPixmap mar(":/sprites/mar_1.png");
-                scene->addPixmap(mar);
-                break;
+            if(moises->y < 600)
+            { // escena de juego ganado
+                set_escena(5);
             }
-            case 1:
-            {
-                QPixmap mar(":/sprites/mar_2.png");
-                scene->addPixmap(mar);
-                break;
-            }
-            }
-
-
-
-
         }
 
     }
@@ -709,11 +744,11 @@ void MainWindow::aumentarCronometro()
     }
     case 2:
     {
-        ui->lbl_cronometro->setText(QString::number(tiempo/100 * 80) + " %"); // se coloca el nuevo tiempo
-
-        if(tiempo == 80)
+        ui->lbl_cronometro->setText(QString::number((int)((tiempo/79) * 100)) + " %"); // se coloca el nuevo tiempo
+        if(tiempo == 79)
         {
             ui->lbl_cronometro->hide();
+            niv_max = 3;
             set_escena(3); // se pasa al siguiente nivel
         }
         break;
@@ -852,6 +887,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 //lanzar
 
                 // se muestra dialogo
+
                 ui->dialogo_lbl->show();
                 ui->dialogo_lbl->setText(moises->dialogue->readLine());
 
@@ -933,16 +969,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         // se evalua colision con hebreos
 
         QPointF center1 = moises->mapToScene(moises->boundingRect().center());
-        qreal collisionThreshold = 10;
         for(int i = 0; i < hebreos.size(); i++)
         {
             // Verificar la colisión después de aplicar transformaciones
 
             QPointF center2 = hebreos.at(i)->mapToScene(hebreos.at(i)->boundingRect().center());
-            qreal distance = QLineF(center1, center2).length();
 
 
-            if (distance < collisionThreshold)
+            if (QLineF(center1, center2).length() < 20)
             {
                 hebreos.at(i)->hide();
                 hebreos.removeAt(i);
@@ -1030,25 +1064,20 @@ void MainWindow::on_JugarBtn_clicked()
     }
     case 4:
     {
-        set_escena(1); // se manda al nivel 1
+        set_escena(niv_max); // se manda al nivel que se estaba jugando
         ui->Informacion->hide();
         ui->JugarBtn->setText("INICIAR NIVEL");
         Apuntando = false;
         tiempo = 0;
         return;
     }
-    case 5: // escena de juego ganado
-    {
-
-        break;
     }
-    }
-
-
-    ui->context_lbl->hide();
 
     if(num_escena != 0)
+    {
+        contexto->hide();
         ui->JugarBtn->hide(); // se esconde
+    }
 
     else // si es la primera escena este boton funciona como inicializador del juego
         set_escena(num_escena+1); // se elimina escena anterior y se cambia a la siguiente
@@ -1056,7 +1085,7 @@ void MainWindow::on_JugarBtn_clicked()
     ui->JugarBtn->setText("INICIAR NIVEL");
 }
 
-bool MainWindow::evaluarColision(Personaje *entidad, char dir)
+bool MainWindow::evaluarColision(Personaje *en tidad, char dir)
 {
     if(obstaculos.isEmpty())
         return false;

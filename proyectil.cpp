@@ -1,6 +1,6 @@
 #include "proyectil.h"
 
-Proyectil::Proyectil(QGraphicsView *view, float velIn,  qreal xIn, qreal yIn, float theta,QGraphicsItem *parent)
+Proyectil::Proyectil(QGraphicsView *view, qreal velIn,  qreal xIn, qreal yIn, qreal theta, QGraphicsItem *parent)
     : QGraphicsItem(parent), velIn(velIn), theta(theta), xIn(xIn), yIn(yIn),view(view)
 {
     setFlag(QGraphicsItem::ItemIsFocusable); //Inicialización opcional para decir que tiene el foco para eventos del teclado
@@ -20,7 +20,7 @@ Proyectil::Proyectil(QGraphicsView *view, float velIn,  qreal xIn, qreal yIn, fl
 QRectF Proyectil::boundingRect() const
 {
     if(view != nullptr)
-        return QRectF(posX, posY, 30, 30); // Xoordenadas iniciales del rect (sobre el origen del punto), unidades a la derecha y unidades abajo
+        return QRectF(posX+7, posY+7, 15, 15); // coordenadas iniciales del rect (sobre el origen del punto), unidades a la derecha y unidades abajo
     else
         return QRectF(posX, posY, 50, 80);
 }
@@ -37,7 +37,6 @@ void Proyectil::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         else
         {
             painter->drawPixmap(posX,posY,50,80,*aspecto);
-            rotacion -= 0.05;
         }
         setTransformOriginPoint(boundingRect().center()); // se ajusta el eje de giro
         setRotation(rotacion);
@@ -53,12 +52,12 @@ void Proyectil::moveBy(int dx, int dy)
     setPos(posX, posY);
 }
 
-void Proyectil::movParabolico(float *dt)
+void Proyectil::movParabolico(qreal *dt)
 {
     if(pintar)
     {
 
-        posX = xIn + (velIn*cos(theta) * *dt)*dir;
+        posX = xIn + (velIn *cos(theta) * *dt)*dir;
         posY = yIn - (velIn *sin(theta) * *dt) + (0.5*9.8 * *dt * *dt);
 
         if(posY>310){
@@ -74,7 +73,7 @@ void Proyectil::movParabolico(float *dt)
             xIn = posX;
         }
 
-
+        rotacion += atan2(velIn - 9.8 * *dt, velIn);
 
         setPos(posX,posY);
     }
