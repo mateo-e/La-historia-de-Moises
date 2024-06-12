@@ -1085,7 +1085,7 @@ void MainWindow::on_JugarBtn_clicked()
     ui->JugarBtn->setText("INICIAR NIVEL");
 }
 
-bool MainWindow::evaluarColision(Personaje *en tidad, char dir)
+bool MainWindow::evaluarColision(Personaje *entidad, char dir)
 {
     if(obstaculos.isEmpty())
         return false;
